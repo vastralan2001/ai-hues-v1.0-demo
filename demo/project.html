@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI_Hues — whisper.cpp</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <style>
+    /* 色环雷达图样式 */
+    .spectrum-ring {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 20px auto;
+    }
+    .spectrum-ring svg {
+      width: 100%;
+      height: 100%;
+    }
+    .spectrum-ring .axis-line {
+      stroke: rgba(255,255,255,0.1);
+      stroke-width: 1;
+    }
+    .spectrum-ring .ring-circle {
+      fill: none;
+      stroke: rgba(255,255,255,0.08);
+      stroke-width: 1;
+    }
+    .spectrum-ring .data-polygon {
+      fill: url(#huesGradient);
+      fill-opacity: 0.35;
+      stroke: var(--accent2);
+      stroke-width: 2;
+    }
+    .spectrum-ring .data-point {
+      fill: var(--accent2);
+      r: 4;
+    }
+    .spectrum-ring .axis-label {
+      fill: var(--muted);
+      font-size: 10px;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+    .spectrum-ring .center-score {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .spectrum-ring .center-score .score-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--accent2);
+      line-height: 1;
+    }
+    .spectrum-ring .center-score .score-label {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* 维度详情卡片 */
+    .dim-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .dim-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px;
+      background: var(--card);
+      text-align: center;
+    }
+    .dim-card .dim-icon {
+      width: 32px;
+      height: 32px;
+      margin: 0 auto 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .dim-card.do .dim-icon { background: rgba(139, 92, 246, 0.2); color: #a78bfa; }
+    .dim-card.se .dim-icon { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .dim-card.co .dim-icon { background: rgba(34, 211, 238, 0.2); color: #22d3ee; }
+    .dim-card.mt .dim-icon { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+    .dim-card.ts .dim-icon { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .dim-card.pe .dim-icon { background: rgba(232, 121, 249, 0.2); color: #e879f9; }
+    .dim-card .dim-name {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .dim-card .dim-score {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* 使用指南区块 */
+    .usage-section {
+      margin-top: 28px;
+    }
+    .usage-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 16px;
+    }
+    .usage-tab {
+      padding: 10px 16px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font: inherit;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+    }
+    .usage-tab.active {
+      color: var(--accent2);
+      border-bottom-color: var(--accent2);
+    }
+    .usage-panel {
+      display: none;
+    }
+    .usage-panel.active {
+      display: block;
+    }
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-family: "SF Mono", "Monaco", "Inconsolata", monospace;
+      font-size: 0.85rem;
+      overflow-x: auto;
+      margin: 12px 0;
+    }
+    .code-block .comment {
+      color: #6b7280;
+    }
+    .code-block .prompt {
+      color: #22d3ee;
+    }
+    .code-block .cmd {
+      color: #f2f0ff;
+    }
+    .usage-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .usage-card {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      background: var(--card);
+    }
+    .usage-card h4 {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .usage-card p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .tag {
+      font-size: 0.72rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--muted);
+    }
+
+    /* Showcase 区块 */
+    .showcase-list {
+      margin-top: 20px;
+    }
+    .showcase-item {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 18px;
+      background: var(--card);
+      margin-bottom: 14px;
+    }
+    .showcase-item .showcase-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .showcase-item .showcase-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .showcase-item .showcase-meta {
+      flex: 1;
+    }
+    .showcase-item .showcase-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 4px;
+    }
+    .showcase-item .showcase-author {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .showcase-item .showcase-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0 0 12px;
+    }
+    .showcase-item .showcase-stats {
+      display: flex;
+      gap: 16px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .showcase-item .showcase-stats span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .showcase-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .gallery-item {
+      aspect-ratio: 16/10;
+      background: var(--surface);
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    /* 快速操作 */
+    .quick-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .quick-actions .btn {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+
+    /* 两栏布局 */
+    .project-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 28px;
+    }
+    @media (max-width: 900px) {
+      .project-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .project-sidebar .sidebar-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      background: var(--card);
+      margin-bottom: 14px;
+    }
+    .sidebar-card h4 {
+      margin: 0 0 12px;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+    .sidebar-card .info-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      padding: 6px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .sidebar-card .info-row:last-child {
+      border-bottom: none;
+    }
+    .sidebar-card .info-label {
+      color: var(--muted);
+    }
+    .sidebar-card .info-value {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"><div id="nav-mount"></div></header>
+  
+  <main class="wrap section">
+    <!-- 项目头部 -->
+    <div class="project-header" style="margin-bottom: 24px;">
+      <p class="muted" style="margin-bottom: 8px;">
+        <span class="badge">Hue · ML / edge</span>
+        <a href="https://github.com/ggerganov/whisper.cpp" target="_blank" rel="noopener">GitHub ↗</a>
+      </p>
+      <h1 style="margin-bottom: 12px;">whisper.cpp</h1>
+      <p class="lede" style="max-width: none; margin-bottom: 16px;">
+        OpenAI Whisper 的 C++ 移植版，专为本地高性能推理设计。无需 GPU，纯 CPU 即可实时转录音频。
+        适合需要<strong>隐私优先</strong>、<strong>离线可用</strong>、<strong>低延迟</strong>的语音应用场景。
+      </p>
+      <div class="quick-actions">
+        <a href="https://github.com/ggerganov/whisper.cpp" target="_blank" class="btn">⭐ Star (32.5k)</a>
+        <a href="#quickstart" class="btn btn-ghost">🚀 快速开始</a>
+        <a href="#showcases" class="btn btn-ghost">👀 查看案例</a>
+        <button class="btn btn-ghost" disabled>🔔 订阅更新</button>
+      </div>
+    </div>
+
+    <div class="project-layout">
+      <div class="project-main">
+        <!-- Hues 色环评分 -->
+        <h2 style="margin-bottom: 8px;">🎨 Hues 光谱评分</h2>
+        <p class="muted" style="margin-bottom: 16px;">
+          六维审计模型：DOCS(文档) · SEC(安全) · COM(社区) · MTN(维护) · TST(测试) · PERF(性能)
+          <a href="./docs/HUES-scoring-dimensions.md" style="margin-left: 8px;">详细说明 →</a>
+        </p>
+        
+        <div class="card">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+            <!-- 雷达图 -->
+            <div class="spectrum-ring">
+              <svg viewBox="0 0 220 220">
+                <defs>
+                  <linearGradient id="huesGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                    <stop offset="50%" style="stop-color:#22d3ee;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                  </linearGradient>
+                </defs>
+                <!-- 背景环 -->
+                <circle cx="110" cy="110" r="30" class="ring-circle" />
+                <circle cx="110" cy="110" r="60" class="ring-circle" />
+                <circle cx="110" cy="110" r="90" class="ring-circle" />
+                <!-- 轴线 -->
+                <line x1="110" y1="20" x2="110" y2="110" class="axis-line" />
+                <line x1="188" y1="65" x2="110" y2="110" class="axis-line" />
+                <line x1="188" y1="155" x2="110" y2="110" class="axis-line" />
+                <line x1="110" y1="200" x2="110" y2="110" class="axis-line" />
+                <line x1="32" y1="155" x2="110" y2="110" class="axis-line" />
+                <line x1="32" y1="65" x2="110" y2="110" class="axis-line" />
+                <!-- 数据多边形 (0-100 映射到 0-90半径) -->
+                <polygon points="110,29 173,72 173,144 110,187 47,144 47,72" class="data-polygon" 
+                  transform="scale(0.78,0.78) translate(30.8,30.8)" id="radar-polygon" />
+                <!-- 数据点 -->
+                <circle cx="110" cy="29" class="data-point" id="pt-docs" />
+                <circle cx="173" cy="72" class="data-point" id="pt-com" />
+                <circle cx="173" cy="144" class="data-point" id="pt-perf" />
+                <circle cx="110" cy="187" class="data-point" id="pt-mtn" />
+                <circle cx="47" cy="144" class="data-point" id="pt-tst" />
+                <circle cx="47" cy="72" class="data-point" id="pt-sec" />
+                <!-- 标签 -->
+                <text x="110" y="12" class="axis-label">DOCS</text>
+                <text x="198" y="65" class="axis-label">COM</text>
+                <text x="198" y="155" class="axis-label">PERF</text>
+                <text x="110" y="208" class="axis-label">MTN</text>
+                <text x="22" y="155" class="axis-label">TST</text>
+                <text x="22" y="65" class="axis-label">SEC</text>
+              </svg>
+              <div class="center-score">
+                <div class="score-value" id="overall-score">79</div>
+                <div class="score-label">综合评分</div>
+              </div>
+            </div>
+            
+            <!-- 维度卡片 -->
+            <div class="dim-cards">
+              <div class="dim-card do">
+                <div class="dim-icon">DO</div>
+                <div class="dim-name">文档</div>
+                <div class="dim-score">78</div>
+              </div>
+              <div class="dim-card se">
+                <div class="dim-icon">SE</div>
+                <div class="dim-name">安全</div>
+                <div class="dim-score">72</div>
+              </div>
+              <div class="dim-card co">
+                <div class="dim-icon">CO</div>
+                <div class="dim-name">社区</div>
+                <div class="dim-score">81</div>
+              </div>
+              <div class="dim-card mt">
+                <div class="dim-icon">MT</div>
+                <div class="dim-name">维护</div>
+                <div class="dim-score">88</div>
+              </div>
+              <div class="dim-card ts">
+                <div class="dim-icon">TS</div>
+                <div class="dim-name">测试</div>
+                <div class="dim-score">64</div>
+              </div>
+              <div class="dim-card pe">
+                <div class="dim-icon">PE</div>
+                <div class="dim-name">性能</div>
+                <div class="dim-score">90</div>
+              </div>
+            </div>
+          </div>
+          
+          <p class="muted" style="margin-top: 16px; font-size: 0.8rem;">
+            <strong>评分说明：</strong>基于仓库元数据的启发式占位分（Demo 阶段）。上线后将替换为自动审计 + 可解释面板。
+            最后更新：2024-01-15 · <a href="./article-view.html?id=1">查看详细解读 →</a>
+          </p>
+        </div>
+
+        <!-- 使用指南 -->
+        <div class="usage-section" id="quickstart">
+          <h2 style="margin-bottom: 16px;">📖 使用指南</h2>
+          
+          <div class="usage-tabs">
+            <button class="usage-tab active" onclick="switchTab('quickstart')">快速开始</button>
+            <button class="usage-tab" onclick="switchTab('patterns')">常见用法</button>
+            <button class="usage-tab" onclick="switchTab('config')">配置说明</button>
+          </div>
+          
+          <!-- 快速开始 -->
+          <div class="usage-panel active" id="panel-quickstart">
+            <div class="card">
+              <h4 style="margin-top: 0;">1. 下载预编译模型</h4>
+              <div class="code-block">
+                <span class="prompt">$</span> <span class="cmd">bash models/download-ggml-model.sh base.en</span><br>
+                <span class="comment"># 可选: tiny, base, small, medium, large (越大越准越慢)</span>
+              </div>
+              
+              <h4>2. 编译项目</h4>
+              <div class="code-block">
+                <span class="prompt">$</span> <span class="cmd">make</span><br>
+                <span class="comment"># 或 cmake: mkdir build && cd build && cmake .. && make -j</span>
+              </div>
+              
+              <h4>3. 转录音频</h4>
+              <div class="code-block">
+                <span class="prompt">$</span> <span class="cmd">./main -m models/ggml-base.en.bin -f samples/jfk.wav</span><br>
+                <span class="comment"># 输出文本到 stdout，支持 .wav, .mp3, .ogg 等</span>
+              </div>
+              
+              <h4>4. 实时流式识别（Mac）</h4>
+              <div class="code-block">
+                <span class="prompt">$</span> <span class="cmd">./stream -m models/ggml-base.en.bin --step 3000 --length 10000</span><br>
+                <span class="comment"># 从麦克风实时输入，3秒步进，10秒窗口</span>
+              </div>
+              
+              <div class="quick-actions" style="margin-top: 16px;">
+                <a href="https://github.com/ggerganov/whisper.cpp#quick-start" target="_blank" class="btn btn-ghost">📚 完整 README</a>
+                <a href="https://github.com/ggerganov/whisper.cpp/tree/master/examples" target="_blank" class="btn btn-ghost">💡 更多示例</a>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 常见用法 -->
+          <div class="usage-panel" id="panel-patterns">
+            <div class="usage-grid">
+              <div class="usage-card">
+                <h4>🎙️ 会议录音转录</h4>
+                <p>批量处理长音频文件，生成带时间戳的文本。适合会议纪要、播客后期。</p>
+                <div class="tag-list">
+                  <span class="tag">长音频</span>
+                  <span class="tag">时间戳</span>
+                  <span class="tag">批量</span>
+                </div>
+                <div class="code-block" style="margin-top: 10px; font-size: 0.75rem;">
+                  ./main -otxt -of srt -pp -tp -ml 64 ...
+                </div>
+              </div>
+              
+              <div class="usage-card">
+                <h4>🌐 命令行语音助手</h4>
+                <p>结合 <code>stream</code> 示例 + shell 脚本，实现语音控制命令行。无需云端 API。</p>
+                <div class="tag-list">
+                  <span class="tag">实时</span>
+                  <span class="tag">本地</span>
+                  <span class="tag">脚本</span>
+                </div>
+              </div>
+              
+              <div class="usage-card">
+                <h4>📱 移动端集成</h4>
+                <p>通过 Core ML / NNAPI 后端在 iOS/Android 运行。已有社区封装的 Flutter/React Native 桥接。</p>
+                <div class="tag-list">
+                  <span class="tag">iOS</span>
+                  <span class="tag">Android</span>
+                  <span class="tag">CoreML</span>
+                </div>
+              </div>
+              
+              <div class="usage-card">
+                <h4>🔒 隐私敏感场景</h4>
+                <p>医疗、法律、金融记录转录。数据不出设备，符合 GDPR/HIPAA 要求。</p>
+                <div class="tag-list">
+                  <span class="tag">离线</span>
+                  <span class="tag">隐私</span>
+                  <span class="tag">合规</span>
+                </div>
+              </div>
+              
+              <div class="usage-card">
+                <h4>🎮 游戏/VR 语音输入</h4>
+                <p>低延迟实时识别，适合游戏内聊天、VR 交互。纯 CPU 不抢 GPU 资源。</p>
+                <div class="tag-list">
+                  <span class="tag">低延迟</span>
+                  <span class="tag">游戏</span>
+                  <span class="tag">VR</span>
+                </div>
+              </div>
+              
+              <div class="usage-card">
+                <h4>🐍 Python 绑定</h4>
+                <p>通过 <code>whisper.cpp-python</code> 在 Python 中使用，兼容 NumPy 音频数组。</p>
+                <div class="tag-list">
+                  <span class="tag">Python</span>
+                  <span class="tag">NumPy</span>
+                  <span class="tag">pip</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 配置说明 -->
+          <div class="usage-panel" id="panel-config">
+            <div class="card">
+              <h4 style="margin-top: 0;">关键参数速查</h4>
+              <table style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
+                <tr style="border-bottom: 1px solid var(--line);">
+                  <td style="padding: 10px 0; font-family: monospace; color: var(--accent2);">-m</td>
+                  <td style="padding: 10px; color: var(--muted);">模型文件路径</td>
+                  <td style="padding: 10px; color: var(--text);">必需</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                  <td style="padding: 10px 0; font-family: monospace; color: var(--accent2);">-f</td>
+                  <td style="padding: 10px; color: var(--muted);">输入音频文件</td>
+                  <td style="padding: 10px; color: var(--text);">文件模式必需</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                  <td style="padding: 10px 0; font-family: monospace; color: var(--accent2);">-l</td>
+                  <td style="padding: 10px; color: var(--muted);">语言 (en, zh, ja...)</td>
+                  <td style="padding: 10px; color: var(--text);">默认 auto-detect</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                  <td style="padding: 10px 0; font-family: monospace; color: var(--accent2);">-otxt/-osrt/-ovtt</td>
+                  <td style="padding: 10px; color: var(--muted);">输出格式</td>
+                  <td style="padding: 10px; color: var(--text);">默认 stdout</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                  <td style="padding: 10px 0; font-family: monospace; color: var(--accent2);">-t N</td>
+                  <td style="padding: 10px; color: var(--muted);">使用 N 个线程</td>
+                  <td style="padding: 10px; color: var(--text);">默认 4</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                  <td style="padding: 10px 0; font-family: monospace; color: var(--accent2);">-pp</td>
+                  <td style="padding: 10px; color: var(--muted);">输出概率分数</td>
+                  <td style="padding: 10px; color: var(--text);">可选</td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--line);">
+                  <td style="padding: 10px 0; font-family: monospace; color: var(--accent2);">-tp</td>
+                  <td style="padding: 10px; color: var(--muted);">输出时间戳</td>
+                  <td style="padding: 10px; color: var(--text);">建议长音频开启</td>
+                </tr>
+              </table>
+              
+              <h4 style="margin-top: 24px;">模型大小选择指南</h4>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 12px;">
+                <div style="border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center;">
+                  <div style="font-weight: 700; color: var(--text);">tiny</div>
+                  <div style="font-size: 0.75rem; color: var(--muted);">39M / 最快</div>
+                  <div style="font-size: 0.7rem; color: var(--accent); margin-top: 4px;">适合实时</div>
+                </div>
+                <div style="border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center;">
+                  <div style="font-weight: 700; color: var(--text);">base</div>
+                  <div style="font-size: 0.75rem; color: var(--muted);">74M / 平衡</div>
+                  <div style="font-size: 0.7rem; color: var(--accent2); margin-top: 4px;">⭐ 推荐入门</div>
+                </div>
+                <div style="border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center;">
+                  <div style="font-weight: 700; color: var(--text);">small</div>
+                  <div style="font-size: 0.75rem; color: var(--muted);">244M / 较好</div>
+                  <div style="font-size: 0.7rem; color: var(--warn); margin-top: 4px;">精度↑速度↓</div>
+                </div>
+                <div style="border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center;">
+                  <div style="font-weight: 700; color: var(--text);">medium</div>
+                  <div style="font-size: 0.75rem; color: var(--muted);">769M / 好</div>
+                  <div style="font-size: 0.7rem; color: var(--warn); margin-top: 4px;">慢但准</div>
+                </div>
+                <div style="border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center;">
+                  <div style="font-weight: 700; color: var(--text);">large</div>
+                  <div style="font-size: 0.75rem; color: var(--muted);">1550M / 最佳</div>
+                  <div style="font-size: 0.7rem; color: var(--warn); margin-top: 4px;">需要 4GB+ RAM</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Showcase -->
+        <div style="margin-top: 32px;" id="showcases">
+          <h2 style="margin-bottom: 8px;">🏆 真实案例 Showcases</h2>
+          <p class="muted" style="margin-bottom: 16px;">
+            社区用户用 whisper.cpp 构建的实际产品/工具
+            <a href="./showcases.html" style="margin-left: 8px;">查看全部 →</a>
+          </p>
+          
+          <div class="showcase-list">
+            <div class="showcase-item">
+              <div class="showcase-header">
+                <div class="showcase-avatar">📝</div>
+                <div class="showcase-meta">
+                  <h4 class="showcase-title">MeetingMinutes — 离线会议助手</h4>
+                  <div class="showcase-author">by @devteam-acme · 开源工具</div>
+                </div>
+              </div>
+              <p class="showcase-desc">
+                企业内部部署的会议转录服务。whisper.cpp 作为核心引擎，
+                在本地服务器上批量处理 Zoom/Teams 录屏，生成带发言人标签的会议纪要。
+                解决敏感商业讨论不能上云的问题。
+              </p>
+              <div class="showcase-stats">
+                <span>🎧 音频处理</span>
+                <span>🏢 企业场景</span>
+                <span>🔒 隐私优先</span>
+              </div>
+              <div class="showcase-gallery">
+                <div class="gallery-item">转录界面截图</div>
+                <div class="gallery-item">时间轴展示</div>
+              </div>
+            </div>
+            
+            <div class="showcase-item">
+              <div class="showcase-header">
+                <div class="showcase-avatar">🎙️</div>
+                <div class="showcase-meta">
+                  <h4 class="showcase-title">PodScribe — 播客制作流水线</h4>
+                  <div class="showcase-author">by @podcaster-tools · 商业产品</div>
+                </div>
+              </div>
+              <p class="showcase-desc">
+                独立播客作者的工具箱。上传原始录音 → 自动分段 → whisper.cpp 转录 → 
+                AI 生成 shownotes。全程在作者笔记本上完成，无需订阅付费转录服务。
+              </p>
+              <div class="showcase-stats">
+                <span>🎵 媒体制作</span>
+                <span>⚡ 本地处理</span>
+                <span>💰 成本优化</span>
+              </div>
+            </div>
+            
+            <div class="showcase-item">
+              <div class="showcase-header">
+                <div class="showcase-avatar">🤖</div>
+                <div class="showcase-meta">
+                  <h4 class="showcase-title">VoiceCommander — 智能家居语音控制</h4>
+                  <div class="showcase-author">by @iot-hackers · DIY 项目</div>
+                </div>
+              </div>
+              <p class="showcase-desc">
+                树莓派 + whisper.cpp + Home Assistant。实现完全离线的语音控制，
+                "开灯"、"调温度" 等命令本地识别，无需联网、无隐私顾虑。
+                延迟 < 500ms，响应速度媲美商业方案。
+              </p>
+              <div class="showcase-stats">
+                <span>🏠 IoT</span>
+                <span>📟 嵌入式</span>
+                <span>🚀 低延迟</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card" style="margin-top: 16px; text-align: center; padding: 24px;">
+            <p style="margin: 0 0 12px; color: var(--muted);">你有用 whisper.cpp 做的项目？</p>
+            <button class="btn" disabled>提交 Showcase (即将开放)</button>
+          </div>
+        </div>
+
+        <!-- 相关文章 -->
+        <div style="margin-top: 32px;">
+          <h2 style="margin-bottom: 16px;">📰 相关文章</h2>
+          <div style="border: 1px solid var(--line); border-radius: 12px; padding: 16px; background: var(--card);">
+            <h4 style="margin: 0 0 8px;">
+              <a href="./article-view.html?id=1">Hues 特写：whisper.cpp 为什么值得选？</a>
+            </h4>
+            <p class="muted" style="margin: 0; font-size: 0.85rem;">
+              六维评分深度解读、与云端 API 对比、选型建议、以及什么时候不该用它。
+            </p>
+            <div style="margin-top: 12px;">
+              <a href="./articles.html" class="btn btn-ghost" style="font-size: 0.8rem; padding: 6px 12px;">浏览全部文章 →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 评论区 -->
+        <h2 style="margin-top: 32px;" id="comments">💬 社区评论</h2>
+        <div class="card" style="margin-bottom: 16px;">
+          <div class="comment">
+            <strong>@ada</strong> <span style="color: var(--muted); font-size: 0.8rem;">2天前</span><br>
+            Cold start 很快，在 M1 MacBook 上编译不到 30 秒。唯一需要注意的是要根据你的架构选择正确的编译参数。
+          </div>
+          <div class="comment">
+            <strong>@river</strong> <span style="color: var(--muted); font-size: 0.8rem;">1周前</span><br>
+            Streaming 文档确实有点 rough，但看 examples/stream 源码就懂了。实时效果比我想象的好很多。
+          </div>
+          <div class="comment">
+            <strong>@founder-x</strong> <span style="color: var(--muted); font-size: 0.8rem;">2周前</span><br>
+            我们用在客服录音分析上，每天处理 500+ 小时音频，纯 CPU 方案省了一大笔云端 API 费用。
+          </div>
+        </div>
+        <textarea rows="3" placeholder="登录后发表评论（原型占位）"></textarea>
+        <div class="row" style="justify-content: flex-end;">
+          <button type="button" class="btn btn-ghost" disabled>登录后评论</button>
+        </div>
+
+        <!-- Blend -->
+        <div style="margin-top: 32px; padding: 20px; border: 1px dashed var(--line); border-radius: 12px;">
+          <h4 style="margin: 0 0 8px;">🧬 Blend — 组合工作台 (Phase 3)</h4>
+          <p class="muted" style="margin: 0 0 12px;">想把这个项目和 Astro + 某个 UI 库组合成一个完整站点？Blend 帮你生成架构建议和部署配置。</p>
+          <a href="./blend.html" class="btn btn-ghost" style="font-size: 0.85rem;">打开 Blend 预览 →</a>
+        </div>
+      </div>
+
+      <!-- 侧边栏 -->
+      <div class="project-sidebar">
+        <div class="sidebar-card">
+          <h4>📊 项目统计</h4>
+          <div class="info-row">
+            <span class="info-label">⭐ Stars</span>
+            <span class="info-value">32.5k</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">🍴 Forks</span>
+            <span class="info-value">3.1k</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">👁️ Watchers</span>
+            <span class="info-value">892</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">📝 License</span>
+            <span class="info-value">MIT</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">🔤 主要语言</span>
+            <span class="info-value">C++</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">📅 创建时间</span>
+            <span class="info-value">2022-09</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">🔄 最后提交</span>
+            <span class="info-value">2天前</span>
+          </div>
+        </div>
+        
+        <div class="sidebar-card">
+          <h4>🏷️ 标签</h4>
+          <div class="tag-list" style="margin: 0;">
+            <span class="tag">machine-learning</span>
+            <span class="tag">speech-recognition</span>
+            <span class="tag">whisper</span>
+            <span class="tag">cpp</span>
+            <span class="tag">local-ai</span>
+            <span class="tag">edge-computing</span>
+          </div>
+        </div>
+        
+        <div class="sidebar-card">
+          <h4>🔗 快速链接</h4>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <a href="https://github.com/ggerganov/whisper.cpp" target="_blank" style="font-size: 0.85rem;">GitHub 仓库 →</a>
+            <a href="https://github.com/ggerganov/whisper.cpp/releases" target="_blank" style="font-size: 0.85rem;">Releases →</a>
+            <a href="https://github.com/ggerganov/whisper.cpp/discussions" target="_blank" style="font-size: 0.85rem;">Discussions →</a>
+            <a href="https://github.com/ggerganov/whisper.cpp/issues" target="_blank" style="font-size: 0.85rem;">Issues →</a>
+          </div>
+        </div>
+        
+        <div class="sidebar-card">
+          <h4>📈 趋势</h4>
+          <div style="height: 60px; background: var(--surface); border-radius: 6px; display: flex; align-items: flex-end; padding: 8px; gap: 4px;">
+            <div style="flex: 1; height: 30%; background: var(--accent); border-radius: 2px;"></div>
+            <div style="flex: 1; height: 45%; background: var(--accent); border-radius: 2px;"></div>
+            <div style="flex: 1; height: 35%; background: var(--accent); border-radius: 2px;"></div>
+            <div style="flex: 1; height: 60%; background: var(--accent); border-radius: 2px;"></div>
+            <div style="flex: 1; height: 55%; background: var(--accent); border-radius: 2px;"></div>
+            <div style="flex: 1; height: 80%; background: var(--accent2); border-radius: 2px;"></div>
+            <div style="flex: 1; height: 70%; background: var(--accent2); border-radius: 2px;"></div>
+          </div>
+          <p style="margin: 8px 0 0; font-size: 0.75rem; color: var(--muted);">最近 7 天 Star 增长趋势</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <footer class="site-footer"><div class="wrap"><span data-i18n="footerNote"></span></div></footer>
+  <script src="./assets/app.js"></script>
+  <script>
+    // 标签页切换
+    function switchTab(tabName) {
+      document.querySelectorAll('.usage-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.usage-panel').forEach(p => p.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById('panel-' + tabName).classList.add('active');
+    }
+    
+    // 更新雷达图数据点位置
+    function updateRadarPoint(id, score) {
+      // score 0-100, radius 0-90
+      const basePositions = {
+        'pt-docs': { x: 110, y: 29, angle: -90 },
+        'pt-com': { x: 173, y: 72, angle: -30 },
+        'pt-perf': { x: 173, y: 144, angle: 30 },
+        'pt-mtn': { x: 110, y: 187, angle: 90 },
+        'pt-tst': { x: 47, y: 144, angle: 150 },
+        'pt-sec': { x: 47, y: 72, angle: -150 }
+      };
+      
+      const base = basePositions[id];
+      const radius = (score / 100) * 90;
+      const angleRad = (base.angle * Math.PI) / 180;
+      
+      const newX = 110 + radius * Math.cos(angleRad);
+      const newY = 110 + radius * Math.sin(angleRad);
+      
+      const point = document.getElementById(id);
+      if (point) {
+        point.setAttribute('cx', newX);
+        point.setAttribute('cy', newY);
+      }
+    }
+    
+    // 初始化雷达图
+    const scores = { docs: 78, sec: 72, com: 81, mtn: 88, tst: 64, perf: 90 };
+    updateRadarPoint('pt-docs', scores.docs);
+    updateRadarPoint('pt-sec', scores.sec);
+    updateRadarPoint('pt-com', scores.com);
+    updateRadarPoint('pt-mtn', scores.mtn);
+    updateRadarPoint('pt-tst', scores.tst);
+    updateRadarPoint('pt-perf', scores.perf);
+    
+    // 更新多边形
+    function updatePolygon() {
+      const s = scores;
+      const toRad = (deg) => (deg * Math.PI) / 180;
+      const getPoint = (angle, score) => {
+        const r = (score / 100) * 90;
+        return {
+          x: 110 + r * Math.cos(toRad(angle)),
+          y: 110 + r * Math.sin(toRad(angle))
+        };
+      };
+      
+      const p1 = getPoint(-90, s.docs);
+      const p2 = getPoint(-30, s.com);
+      const p3 = getPoint(30, s.perf);
+      const p4 = getPoint(90, s.mtn);
+      const p5 = getPoint(150, s.tst);
+      const p6 = getPoint(-150, s.sec);
+      
+      const points = `${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y} ${p4.x},${p4.y} ${p5.x},${p5.y} ${p6.x},${p6.y}`;
+      document.getElementById('radar-polygon').setAttribute('points', points);
+    }
+    updatePolygon();
+  </script>
+</body>
+</html>

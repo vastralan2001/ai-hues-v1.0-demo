@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI_Hues — Demo</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="site-header"><div id="nav-mount"></div></header>
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="eyebrow" data-i18n="homeEyebrow"></p>
+      <h1 data-i18n="homeH1"></h1>
+      <p class="lede" data-i18n="homeLede"></p>
+      <form id="idea-form" action="./idea-result.html" method="get">
+        <label for="q" class="muted" data-i18n="homeIdeaLabel"></label>
+        <textarea id="q" name="q" data-i18n-placeholder="homeIdeaPh"></textarea>
+        <div class="row">
+          <button type="submit" class="btn" data-i18n="homeSearchBtn"></button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2 data-i18n="homeKwTitle"></h2>
+      <p class="muted">① Append only — does not jump to Explore (K1).</p>
+      <div class="chips" id="kw"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2 data-i18n="homeIdeaShowcaseTitle"></h2>
+      <div class="grid">
+        <article class="card"><h3>Voice memo → English summary</h3><p class="muted">One-liner product idea · tags: audio, MVP</p></article>
+        <article class="card"><h3>Campus second-hand board</h3><p class="muted">One-liner product idea · tags: web, students</p></article>
+        <article class="card"><h3>Weekly team retro notes</h3><p class="muted">One-liner product idea · tags: collab, SaaS</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2 data-i18n="homeFeatShowTitle"></h2>
+      <div class="grid">
+        <article class="card"><h3><a href="./showcase.html">Offline meeting capture</a></h3><p class="muted">whisper.cpp · Astro</p></article>
+        <article class="card"><h3><a href="./showcase.html">Analytics on transcripts</a></h3><p class="muted">DuckDB · Python</p></article>
+        <article class="card"><h3><a href="./showcase.html">Marketing microsite</a></h3><p class="muted">Astro · MDX</p></article>
+      </div>
+      <p class="row"><a class="btn btn-ghost" href="./showcases.html" data-i18n="homeFeatShowAll"></a></p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2 data-i18n="homeArticlesTitle"></h2>
+      <p class="muted">From real GitHub metadata (demo snapshot).</p>
+      <div class="grid" id="home-articles"></div>
+      <p class="row"><a class="btn btn-ghost" href="./articles.html" data-i18n="homeArticlesAll"></a></p>
+    </div>
+  </section>
+
+  <footer class="site-footer"><div class="wrap"><span data-i18n="footerNote"></span></div></footer>
+  <script src="./assets/articles-data.js"></script>
+  <script src="./assets/app.js"></script>
+  <script>
+    (function () {
+      var ta = document.getElementById("q");
+      var words = ["audio", "transcript", "static site", "analytics", "MIT"];
+      var kw = document.getElementById("kw");
+      words.forEach(function (w) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "chip";
+        b.textContent = w;
+        b.onclick = function () {
+          ta.value = (ta.value ? ta.value + " " : "") + w;
+        };
+        kw.appendChild(b);
+      });
+      var ha = document.getElementById("home-articles");
+      (window.AI_HUES_ARTICLES || []).slice(0, 3).forEach(function (a) {
+        var el = document.createElement("article");
+        el.className = "card";
+        el.innerHTML =
+          "<h3><a href=\"./article-view.html?id=" +
+          a.id +
+          "\">" +
+          a.title_en +
+          "</a></h3><p class=\"muted\">★ " +
+          (a.stars || 0).toLocaleString() +
+          " · " +
+          (a.language || "—") +
+          "</p>";
+        ha.appendChild(el);
+      });
+    })();
+  </script>
+</body>
+</html>

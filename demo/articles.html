@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI_Hues — Articles</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="site-header"><div id="nav-mount"></div></header>
+  <main class="wrap section">
+    <h1 data-i18n="articlesTitle"></h1>
+    <p class="muted">10 spotlight posts — facts from GitHub REST API (<code>GET /repos/{owner}/{repo}</code>) at generation time. Stars change over time.</p>
+    <p class="row muted">Filter: <button type="button" class="chip">EN</button> <button type="button" class="chip">ZH</button> <button type="button" class="chip">All</button> (UI only)</p>
+    <div class="grid" style="margin-top:16px" id="art-grid"></div>
+    <p class="muted" style="margin-top:20px">Submit + review queue (E2) — prototype: <a href="#">submit@example.com</a></p>
+  </main>
+  <footer class="site-footer"><div class="wrap"><span data-i18n="footerNote"></span></div></footer>
+  <script src="./assets/articles-data.js"></script>
+  <script src="./assets/app.js"></script>
+  <script>
+    (function () {
+      var g = document.getElementById("art-grid");
+      (window.AI_HUES_ARTICLES || []).forEach(function (a) {
+        var el = document.createElement("article");
+        el.className = "card";
+        el.innerHTML =
+          "<h3><a href=\"./article-view.html?id=" +
+          a.id +
+          "\">" +
+          a.title_en +
+          "</a></h3>" +
+          "<p class=\"muted\">★ " +
+          (a.stars || 0).toLocaleString() +
+          " · " +
+          (a.language || "—") +
+          " · " +
+          (a.license || "—") +
+          "</p><p class=\"muted\">" +
+          (a.full_name || "") +
+          "</p>";
+        g.appendChild(el);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI_Hues — Showcase: MeetingMinutes</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <style>
+    .showcase-hero {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 32px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(34, 211, 238, 0.08));
+      margin-bottom: 28px;
+    }
+    .showcase-hero .hero-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .showcase-hero .hero-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+    .showcase-hero .hero-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 8px;
+    }
+    .showcase-hero .hero-author {
+      font-size: 1rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .showcase-hero .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .showcase-hero .hero-tag {
+      font-size: 0.8rem;
+      padding: 5px 12px;
+      border-radius: 6px;
+      background: rgba(139, 92, 246, 0.2);
+      color: #c4b5fd;
+    }
+    .showcase-hero .hero-desc {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+    .showcase-hero .hero-stats {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .showcase-hero .stat-item {
+      text-align: center;
+    }
+    .showcase-hero .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--accent2);
+    }
+    .showcase-hero .stat-label {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tech-stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .tech-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+    }
+    .tech-item .tech-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+    .tech-item .tech-name {
+      font-weight: 600;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+    .tech-item .tech-role {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .gallery-item {
+      aspect-ratio: 16/10;
+      background: var(--surface);
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .timeline {
+      position: relative;
+      padding-left: 24px;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--line);
+    }
+    .timeline-item {
+      position: relative;
+      padding: 16px 0;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -22px;
+      top: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--bg);
+    }
+    .timeline-item .time-date {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .timeline-item .time-title {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .timeline-item .time-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .insight-box {
+      border-left: 3px solid var(--accent2);
+      padding: 16px 20px;
+      background: rgba(34, 211, 238, 0.05);
+      border-radius: 0 10px 10px 0;
+      margin: 16px 0;
+    }
+    .insight-box h4 {
+      margin: 0 0 8px;
+      color: var(--accent2);
+    }
+    .insight-box p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .challenge-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .challenge-list li {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .challenge-list li:last-child {
+      border-bottom: none;
+    }
+    .challenge-list .challenge-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(251, 191, 36, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .challenge-list .challenge-content {
+      flex: 1;
+    }
+    .challenge-list .challenge-title {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .challenge-list .challenge-solution {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .author-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--card);
+    }
+    .author-card .author-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .author-card .author-info {
+      flex: 1;
+    }
+    .author-card .author-name {
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .author-card .author-bio {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 14px;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"><div id="nav-mount"></div></header>
+  
+  <main class="wrap section">
+    <p class="muted" style="margin-bottom: 12px;">
+      <a href="./showcases.html">← 全部 Showcases</a>
+    </p>
+
+    <!-- 案例头部 -->
+    <div class="showcase-hero">
+      <div class="hero-header">
+        <div class="hero-avatar">📝</div>
+        <div style="flex: 1;">
+          <h1 class="hero-title">MeetingMinutes</h1>
+          <div class="hero-author">by @devteam-acme · 开源工具</div>
+          <div class="hero-tags">
+            <span class="hero-tag">🏢 企业应用</span>
+            <span class="hero-tag">🔒 隐私优先</span>
+            <span class="hero-tag">🎧 音频处理</span>
+          </div>
+        </div>
+      </div>
+      <p class="hero-desc">
+        企业内部部署的会议转录与纪要生成系统。基于 whisper.cpp 构建，
+        完全离线运行，敏感商业讨论无需上传云端。已服务 50+ 企业客户，
+        累计处理转录时长超过 10 万小时。
+      </p>
+      <div class="hero-stats">
+        <div class="stat-item">
+          <div class="stat-value">50+</div>
+          <div class="stat-label">企业客户</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">100k+</div>
+          <div class="stat-label">小时转录</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">99.2%</div>
+          <div class="stat-label">准确率</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">&lt;30s</div>
+          <div class="stat-label">1小时音频处理</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 技术栈 -->
+    <h3 class="section-title">🛠️ 技术栈</h3>
+    <div class="tech-stack-grid">
+      <div class="tech-item">
+        <div class="tech-icon">🎯</div>
+        <div>
+          <div class="tech-name">whisper.cpp</div>
+          <div class="tech-role">核心转录引擎 · 本地推理</div>
+        </div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">🐍</div>
+        <div>
+          <div class="tech-name">FastAPI</div>
+          <div class="tech-role">后端 API 框架 · 异步处理</div>
+        </div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">🐘</div>
+        <div>
+          <div class="tech-name">PostgreSQL</div>
+          <div class="tech-role">数据持久化 · 全文检索</div>
+        </div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">⚡</div>
+        <div>
+          <div class="tech-name">Redis</div>
+          <div class="tech-role">任务队列 · 缓存层</div>
+        </div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">📦</div>
+        <div>
+          <div class="tech-name">Celery</div>
+          <div class="tech-role">异步任务 · 批量处理</div>
+        </div>
+      </div>
+      <div class="tech-item">
+        <div class="tech-icon">🐳</div>
+        <div>
+          <div class="tech-name">Docker</div>
+          <div class="tech-role">容器化部署 · 一键安装</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 核心功能 -->
+    <h3 class="section-title">✨ 核心功能</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+      <div class="card">
+        <h4 style="margin: 0 0 10px;">🎙️ 多源音频接入</h4>
+        <p class="muted" style="margin: 0; font-size: 0.9rem;">
+          支持 Zoom/Teams/腾讯会议录屏文件、本地录音、实时麦克风输入。
+          自动检测音频格式，无需手动转换。
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="margin: 0 0 10px;">👤 发言人识别</h4>
+        <p class="muted" style="margin: 0; font-size: 0.9rem;">
+          基于声纹特征的说话人分割。自动标记 "发言人 A"、"发言人 B"，
+          支持后期人工标注姓名。
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="margin: 0 0 10px;">📝 智能摘要</h4>
+        <p class="muted" style="margin: 0; font-size: 0.9rem;">
+          提取会议要点、行动项、决策记录。支持自定义模板导出为 Markdown/PDF。
+        </p>
+      </div>
+      <div class="card">
+        <h4 style="margin: 0 0 10px;">🔒 企业级安全</h4>
+        <p class="muted" style="margin: 0; font-size: 0.9rem;">
+          纯本地部署，数据不出内网。支持 LDAP/SSO 集成，细粒度权限控制。
+        </p>
+      </div>
+    </div>
+
+    <!-- 实现过程 -->
+    <h3 class="section-title">🚀 实现过程</h3>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="time-date">2023-03</div>
+        <div class="time-title">项目启动</div>
+        <div class="time-desc">
+          公司内部需求：每周 20+ 场会议需要记录，现有云转录服务存在隐私顾虑。
+          决定基于 whisper.cpp 自研离线方案。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-date">2023-05</div>
+        <div class="time-title">技术验证</div>
+        <div class="time-desc">
+          对比多个 whisper 实现：whisper.cpp 在 CPU 上的推理速度最快，
+          且 C++ 核心易于封装成 Python 服务。选定 base 模型平衡精度与速度。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-date">2023-08</div>
+        <div class="time-title">MVP 上线</div>
+        <div class="time-desc">
+          内部团队试用。发现问题：长音频需要分段处理、说话人切换检测不准。
+          引入 WebRTC VAD 进行语音活动检测。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-date">2023-12</div>
+        <div class="time-title">开源发布</div>
+        <div class="time-desc">
+          整理代码、编写文档、开源到 GitHub。一周内获得 500+ Stars，
+          收到多个外部公司的部署咨询。
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="time-date">2024-至今</div>
+        <div class="time-title">企业级迭代</div>
+        <div class="time-desc">
+          增加 SSO、审计日志、集群部署支持。服务客户扩展到 50+ 企业，
+          包括金融、法律、咨询等对隐私要求严格的行业。
+        </div>
+      </div>
+    </div>
+
+    <!-- 遇到的挑战 -->
+    <h3 class="section-title">⚠️ 遇到的挑战 & 解决方案</h3>
+    <ul class="challenge-list">
+      <li>
+        <div class="challenge-icon">🔥</div>
+        <div class="challenge-content">
+          <div class="challenge-title">长音频内存占用</div>
+          <div class="challenge-solution">
+            原本直接加载整段音频导致 OOM。改为流式分段处理，
+            使用滑动窗口 + 上下文拼接，内存占用降低 80%。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="challenge-icon">🎯</div>
+        <div class="challenge-content">
+          <div class="challenge-title">说话人切换检测</div>
+          <div class="challenge-solution">
+            whisper.cpp 原生不支持说话人分割。集成 pyannote.audio 进行声纹聚类，
+            在转录后处理阶段对齐时间戳。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="challenge-icon">🌍</div>
+        <div class="challenge-content">
+          <div class="challenge-title">中英文混合场景</div>
+          <div class="challenge-solution">
+            使用 large-v3 模型 + 语言检测自动切换。对于固定中英夹杂的场景
+            （如技术会议），训练了领域适配的 prompt。
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="challenge-icon">⚡</div>
+        <div class="challenge-content">
+          <div class="challenge-title">高并发处理</div>
+          <div class="challenge-solution">
+            单机性能有限。引入 Celery + Redis 任务队列，支持多 worker 并行处理。
+            提供进度回调 API，前端可实时展示转录进度。
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <!-- 关键洞察 -->
+    <h3 class="section-title">💡 关键洞察</h3>
+    <div class="insight-box">
+      <h4>为什么选择 whisper.cpp 而不是云端 API？</h4>
+      <p>
+        不只是隐私考量。长期使用成本对比：处理 10 万小时音频，
+        云端 API 费用约 $50,000，而自研方案硬件成本仅 $3,000（一台中高端服务器）。
+        对于高频场景，本地部署的经济优势巨大。
+      </p>
+    </div>
+    <div class="insight-box">
+      <h4>模型选择的权衡</h4>
+      <p>
+        我们测试了所有模型大小。最终选定 base 作为默认，small 作为高精度选项：
+        base 在常见会议场景准确率已达 95%+，而 small 的额外 2-3% 提升带来的 3 倍计算成本不划算。
+        用户可按场景选择。
+      </p>
+    </div>
+
+    <!-- 展示图 -->
+    <h3 class="section-title">📸 产品展示</h3>
+    <div class="gallery-grid">
+      <div class="gallery-item">转录结果界面</div>
+      <div class="gallery-item">说话人时间轴</div>
+      <div class="gallery-item">摘要导出页面</div>
+      <div class="gallery-item">管理员控制台</div>
+    </div>
+
+    <!-- 作者信息 -->
+    <h3 class="section-title">👤 关于作者</h3>
+    <div class="author-card">
+      <div class="author-avatar">👨‍💻</div>
+      <div class="author-info">
+        <div class="author-name">@devteam-acme</div>
+        <div class="author-bio">
+          专注于企业级 AI 工具开发的团队。信奉 "AI 应该运行在用户自己的设备上"。
+          已开源多个本地优先的 LLM/STT 工具。
+        </div>
+      </div>
+      <div class="quick-actions">
+        <a href="#" class="btn btn-ghost" style="font-size: 0.8rem; padding: 6px 12px;">GitHub</a>
+        <a href="#" class="btn btn-ghost" style="font-size: 0.8rem; padding: 6px 12px;">官网</a>
+      </div>
+    </div>
+
+    <!-- 链接 -->
+    <h3 class="section-title">🔗 相关链接</h3>
+    <div class="card">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a href="https://github.com/ggerganov/whisper.cpp" target="_blank">📦 依赖项目：whisper.cpp →</a>
+        <a href="#">📄 项目 README（详细部署指南）→</a>
+        <a href="#">🐳 Docker 镜像 →</a>
+        <a href="#">💬 讨论区：提问与交流 →</a>
+      </div>
+    </div>
+
+    <!-- 评论 -->
+    <h3 class="section-title" style="margin-top: 40px;">💬 讨论</h3>
+    <div class="card" style="margin-bottom: 16px;">
+      <div class="comment" style="border-bottom: 1px solid var(--line); margin-bottom: 12px; padding-bottom: 12px;">
+        <strong>@startup-founder</strong> <span style="color: var(--muted); font-size: 0.8rem;">3天前</span><br>
+        正好需要这种方案！请问在 4 核 8G 的服务器上处理 1 小时音频大概要多久？
+      </div>
+      <div class="comment" style="border-bottom: 1px solid var(--line); margin-bottom: 12px; padding-bottom: 12px;">
+        <strong>@devteam-acme</strong> <span style="color: var(--muted); font-size: 0.8rem;">3天前</span> <span style="color: var(--accent); font-size: 0.75rem;">作者</span><br>
+        用 base 模型约 8-10 分钟。建议至少 8G 内存，模型加载需要 ~500MB，
+        剩余用于音频缓冲和中间结果。
+      </div>
+      <div class="comment">
+        <strong>@privacy-guy</strong> <span style="color: var(--muted); font-size: 0.8rem;">1周前</span><br>
+        已部署到公司内部，法务部非常满意数据不出境这点。感谢开源！
+      </div>
+    </div>
+
+    <!-- 相关案例 -->
+    <h3 class="section-title">🔍 相关案例</h3>
+    <div class="related-grid">
+      <div class="card">
+        <h4 style="margin: 0 0 8px; font-size: 0.95rem;"><a href="#">PodScribe</a></h4>
+        <p class="muted" style="margin: 0; font-size: 0.8rem;">播客制作流水线 · 89⭐</p>
+      </div>
+      <div class="card">
+        <h4 style="margin: 0 0 8px; font-size: 0.95rem;"><a href="#">VoiceCommander</a></h4>
+        <p class="muted" style="margin: 0; font-size: 0.8rem;">智能家居语音控制 · 256⭐</p>
+      </div>
+      <div class="card">
+        <h4 style="margin: 0 0 8px; font-size: 0.95rem;"><a href="#">MediScribe</a></h4>
+        <p class="muted" style="margin: 0; font-size: 0.8rem;">医疗记录转录 · 445⭐</p>
+      </div>
+    </div>
+
+    <!-- 底部 CTA -->
+    <div style="margin-top: 40px; padding: 32px; border: 2px dashed var(--line); border-radius: 16px; text-align: center;">
+      <h3 style="margin: 0 0 12px;">🚀 受到启发？</h3>
+      <p class="muted" style="margin: 0 0 16px;">你可以基于同样的技术栈构建自己的应用。</p>
+      <a href="./project.html" class="btn">查看 whisper.cpp 详情 →</a>
+      <a href="./blend.html" class="btn btn-ghost" style="margin-left: 10px;">去 Blend 组合工具 →</a>
+    </div>
+  </main>
+  
+  <footer class="site-footer"><div class="wrap"><span data-i18n="footerNote"></span></div></footer>
+  <script src="./assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI_Hues — Showcases</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+  <style>
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .showcase-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px;
+      background: var(--card);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .showcase-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(139, 92, 246, 0.12);
+    }
+    .showcase-card .card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .showcase-card .card-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .showcase-card .card-meta {
+      flex: 1;
+    }
+    .showcase-card .card-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 4px;
+      text-decoration: none;
+      display: block;
+    }
+    .showcase-card .card-title:hover {
+      color: var(--accent2);
+    }
+    .showcase-card .card-author {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .showcase-card .card-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0 0 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .showcase-card .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .showcase-card .card-tag {
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--muted);
+    }
+    .showcase-card .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+    }
+    .showcase-card .card-stats {
+      display: flex;
+      gap: 12px;
+    }
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 14px 16px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+    .filter-bar select {
+      width: auto;
+      min-width: 140px;
+    }
+    .featured-showcase {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(34, 211, 238, 0.08));
+      margin-bottom: 24px;
+    }
+    .featured-showcase .featured-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .featured-showcase .featured-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+    .featured-showcase .featured-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 6px;
+    }
+    .featured-showcase .featured-author {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .featured-showcase .featured-desc {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .featured-showcase .featured-stats {
+      display: flex;
+      gap: 24px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .submit-banner {
+      border: 2px dashed var(--line);
+      border-radius: 14px;
+      padding: 32px;
+      text-align: center;
+      margin-top: 32px;
+    }
+    .submit-banner h3 {
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+    .submit-banner p {
+      margin: 0 0 16px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header"><div id="nav-mount"></div></header>
+  
+  <main class="wrap section">
+    <p class="muted" style="margin-bottom: 8px;">
+      <span class="badge" style="background: rgba(34, 211, 238, 0.2); color: #22d3ee;">社区精选</span>
+    </p>
+    <h1 style="margin-bottom: 12px;">Showcases</h1>
+    <p class="lede" style="max-width: 640px;">
+      真实的开源项目应用案例。看看其他开发者如何用这些工具构建产品、解决实际问题。
+      每个案例都包含技术栈、实现思路和经验分享。
+    </p>
+
+    <!-- 精选案例 -->
+    <div class="featured-showcase">
+      <div class="featured-header">
+        <div class="featured-avatar">⭐</div>
+        <div>
+          <h2 class="featured-title">本周精选：MeetingMinutes</h2>
+          <div class="featured-author">by @devteam-acme · 企业级会议助手</div>
+        </div>
+      </div>
+      <p class="featured-desc">
+        基于 whisper.cpp 构建的离线会议转录系统。部署在企业内网服务器，
+        自动处理 Zoom/Teams 录屏文件，生成带发言人识别的结构化会议纪要。
+        已服务 50+ 企业客户，累计转录时长 10万+ 小时。
+      </p>
+      <div class="featured-stats">
+        <span>🛠️ whisper.cpp + FastAPI + PostgreSQL</span>
+        <span>🏢 B2B SaaS</span>
+        <span>🔒 纯本地部署</span>
+      </div>
+      <div style="margin-top: 16px;">
+        <a href="./showcase.html?id=meetingminutes" class="btn">查看完整案例 →</a>
+      </div>
+    </div>
+
+    <!-- 筛选 -->
+    <div class="filter-bar">
+      <span style="color: var(--muted); font-size: 0.9rem;">筛选：</span>
+      <select>
+        <option>所有场景</option>
+        <option>🏢 企业应用</option>
+        <option>🎧 媒体处理</option>
+        <option>🏠 IoT/嵌入式</option>
+        <option>📱 移动端</option>
+        <option>🎮 游戏/VR</option>
+      </select>
+      <select>
+        <option>所有类型</option>
+        <option>开源项目</option>
+        <option>商业产品</option>
+        <option>个人工具</option>
+        <option>教学案例</option>
+      </select>
+      <select>
+        <option>最新发布</option>
+        <option>最多收藏</option>
+        <option>最多讨论</option>
+      </select>
+      <div style="flex: 1;"></div>
+      <span style="color: var(--muted); font-size: 0.85rem;">共 24 个案例</span>
+    </div>
+
+    <!-- 案例网格 -->
+    <div class="showcase-grid">
+      <div class="showcase-card">
+        <div class="card-header">
+          <div class="card-avatar">📝</div>
+          <div class="card-meta">
+            <a href="./showcase.html?id=meetingminutes" class="card-title">MeetingMinutes</a>
+            <div class="card-author">by @devteam-acme</div>
+          </div>
+        </div>
+        <p class="card-desc">
+          企业内部部署的会议转录服务。whisper.cpp 作为核心引擎，
+          在本地服务器上批量处理录屏，生成带发言人标签的纪要。
+        </p>
+        <div class="card-tags">
+          <span class="card-tag">whisper.cpp</span>
+          <span class="card-tag">企业</span>
+          <span class="card-tag">隐私优先</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span>⭐ 128</span>
+            <span>💬 23</span>
+          </div>
+          <span>2天前</span>
+        </div>
+      </div>
+
+      <div class="showcase-card">
+        <div class="card-header">
+          <div class="card-avatar">🎙️</div>
+          <div class="card-meta">
+            <a href="./showcase.html?id=podscribe" class="card-title">PodScribe</a>
+            <div class="card-author">by @podcaster-tools</div>
+          </div>
+        </div>
+        <p class="card-desc">
+          播客制作流水线。上传录音 → 自动分段 → 转录 → AI 生成 shownotes。
+          全程在本地完成，无需订阅付费转录服务。
+        </p>
+        <div class="card-tags">
+          <span class="card-tag">whisper.cpp</span>
+          <span class="card-tag">媒体制作</span>
+          <span class="card-tag">成本优化</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span>⭐ 89</span>
+            <span>💬 15</span>
+          </div>
+          <span>1周前</span>
+        </div>
+      </div>
+
+      <div class="showcase-card">
+        <div class="card-header">
+          <div class="card-avatar">🤖</div>
+          <div class="card-meta">
+            <a href="./showcase.html?id=voicecommander" class="card-title">VoiceCommander</a>
+            <div class="card-author">by @iot-hackers</div>
+          </div>
+        </div>
+        <p class="card-desc">
+          树莓派 + whisper.cpp + Home Assistant。完全离线的语音控制，
+          "开灯"、"调温度" 本地识别，延迟 < 500ms。
+        </p>
+        <div class="card-tags">
+          <span class="card-tag">whisper.cpp</span>
+          <span class="card-tag">IoT</span>
+          <span class="card-tag">智能家居</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span>⭐ 256</span>
+            <span>💬 42</span>
+          </div>
+          <span>2周前</span>
+        </div>
+      </div>
+
+      <div class="showcase-card">
+        <div class="card-header">
+          <div class="card-avatar">📚</div>
+          <div class="card-meta">
+            <a href="./showcase.html?id=lecturenotes" class="card-title">LectureNotes AI</a>
+            <div class="card-author">by @edu-tech</div>
+          </div>
+        </div>
+        <p class="card-desc">
+          大学生笔记助手。录制课堂音频，实时转录并提取重点生成思维导图。
+          支持 10+ 语言，离线使用不消耗流量。
+        </p>
+        <div class="card-tags">
+          <span class="card-tag">whisper.cpp</span>
+          <span class="card-tag">教育</span>
+          <span class="card-tag">学生工具</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span>⭐ 312</span>
+            <span>💬 56</span>
+          </div>
+          <span>3周前</span>
+        </div>
+      </div>
+
+      <div class="showcase-card">
+        <div class="card-header">
+          <div class="card-avatar">🎮</div>
+          <div class="card-meta">
+            <a href="./showcase.html?id=voicechatgame" class="card-title">VoiceChat RPG</a>
+            <div class="card-author">by @indie-game-dev</div>
+          </div>
+        </div>
+        <p class="card-desc">
+          纯语音交互的 RPG 游戏。玩家通过语音与 NPC 对话，
+          游戏用 whisper.cpp 本地识别，不依赖云端 API，零延迟。
+        </p>
+        <div class="card-tags">
+          <span class="card-tag">whisper.cpp</span>
+          <span class="card-tag">游戏</span>
+          <span class="card-tag">Unity</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span>⭐ 178</span>
+            <span>💬 31</span>
+          </div>
+          <span>1月前</span>
+        </div>
+      </div>
+
+      <div class="showcase-card">
+        <div class="card-header">
+          <div class="card-avatar">🏥</div>
+          <div class="card-meta">
+            <a href="./showcase.html?id=mediscribe" class="card-title">MediScribe</a>
+            <div class="card-author">by @healthcare-ai</div>
+          </div>
+        </div>
+        <p class="card-desc">
+          医疗记录转录工具。医生口述病历，本地转录生成结构化记录。
+          HIPAA 合规，数据不出设备，已通过多家医院安全审计。
+        </p>
+        <div class="card-tags">
+          <span class="card-tag">whisper.cpp</span>
+          <span class="card-tag">医疗</span>
+          <span class="card-tag">合规</span>
+        </div>
+        <div class="card-footer">
+          <div class="card-stats">
+            <span>⭐ 445</span>
+            <span>💬 67</span>
+          </div>
+          <span>1月前</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 提交案例 -->
+    <div class="submit-banner">
+      <h3>🚀 展示你的项目</h3>
+      <p>用开源工具构建了有趣的东西？提交 Showcase，让更多人看到你的作品。</p>
+      <button class="btn" disabled>提交案例 (即将开放)</button>
+      <p style="margin-top: 12px; font-size: 0.8rem;">需包含：项目介绍、技术栈、实现思路、截图/Demo 链接</p>
+    </div>
+
+    <!-- 相关项目推荐 -->
+    <div style="margin-top: 40px;">
+      <h3 style="margin-bottom: 16px;">🔍 发现更多相关项目</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px;">
+        <div class="card">
+          <h4 style="margin: 0 0 8px; font-size: 0.95rem;"><a href="./project.html">whisper.cpp</a></h4>
+          <p class="muted" style="margin: 0; font-size: 0.8rem;">C++ 语音转录 · 32k⭐</p>
+        </div>
+        <div class="card">
+          <h4 style="margin: 0 0 8px; font-size: 0.95rem;"><a href="#">faster-whisper</a></h4>
+          <p class="muted" style="margin: 0; font-size: 0.8rem;">CTranslate2 优化版 · 8.5k⭐</p>
+        </div>
+        <div class="card">
+          <h4 style="margin: 0 0 8px; font-size: 0.95rem;"><a href="#">WhisperX</a></h4>
+          <p class="muted" style="margin: 0; font-size: 0.8rem;">带时间戳对齐 · 12k⭐</p>
+        </div>
+        <div class="card">
+          <h4 style="margin: 0 0 8px; font-size: 0.95rem;"><a href="#">insanely-fast-whisper</a></h4>
+          <p class="muted" style="margin: 0; font-size: 0.8rem;">PyTorch 加速版 · 6k⭐</p>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <footer class="site-footer"><div class="wrap"><span data-i18n="footerNote"></span></div></footer>
+  <script src="./assets/app.js"></script>
+</body>
+</html>

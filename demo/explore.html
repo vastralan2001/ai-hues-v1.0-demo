@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI_Hues — Explore</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="site-header"><div id="nav-mount"></div></header>
+  <main class="wrap section">
+    <h1 data-i18n="exploreTitle"></h1>
+    <p class="lede" data-i18n="exploreSub"></p>
+
+    <div class="filters">
+      <div>
+        <label class="muted" data-i18n="exploreLang"></label>
+        <select id="f-lang">
+          <option value="all">All</option>
+          <option value="ts">TypeScript</option>
+          <option value="c">C / C++</option>
+          <option value="py">Python</option>
+        </select>
+      </div>
+      <div>
+        <label class="muted" data-i18n="exploreTopic"></label>
+        <select id="f-topic">
+          <option value="all">All</option>
+          <option value="web">web</option>
+          <option value="ml">ml</option>
+          <option value="data">data</option>
+        </select>
+      </div>
+      <div>
+        <label class="muted" data-i18n="exploreLic"></label>
+        <select id="f-lic">
+          <option value="any">Any</option>
+          <option value="mit">MIT</option>
+          <option value="apache">Apache-2.0</option>
+          <option value="gpl">GPL</option>
+        </select>
+      </div>
+      <div>
+        <label class="muted" data-i18n="exploreSort"></label>
+        <select id="f-sort">
+          <option value="stars">Stars (default H2)</option>
+          <option value="updated">Recently updated</option>
+        </select>
+      </div>
+    </div>
+    <div class="row" style="margin-bottom:14px">
+      <label class="muted" style="flex:1;min-width:200px" data-i18n="exploreSearch"></label>
+      <input type="search" id="f-q" placeholder="whisper, astro…" style="flex:2;min-width:220px" />
+    </div>
+    <div class="row" style="margin-bottom:16px">
+      <span class="muted" data-i18n="exploreView"></span>
+      <button type="button" class="btn btn-ghost" id="v-card" data-i18n="exploreCards"></button>
+      <button type="button" class="btn btn-ghost" id="v-dense" data-i18n="exploreDense"></button>
+    </div>
+
+    <div id="view-cards" class="grid"></div>
+    <div id="view-dense" class="table-placeholder" hidden>Dense / table view — placeholder (L3).</div>
+  </main>
+  <footer class="site-footer"><div class="wrap"><span data-i18n="footerNote"></span></div></footer>
+  <script src="./assets/app.js"></script>
+  <script>
+    var DATA = [
+      { name: "whisper.cpp", desc: "Local speech-to-text", lang: "c", topic: "ml", lic: "mit", stars: 32000, t: "whisper speech" },
+      { name: "Astro", desc: "Content-focused web", lang: "ts", topic: "web", lic: "mit", stars: 48000, t: "astro static" },
+      { name: "DuckDB", desc: "Embedded analytics", lang: "c", topic: "data", lic: "mit", stars: 28000, t: "duck sql" },
+      { name: "Temporal", desc: "Durable workflows", lang: "ts", topic: "web", lic: "mit", stars: 12000, t: "temporal workflow" },
+    ];
+    function match(item) {
+      var lang = document.getElementById("f-lang").value;
+      var topic = document.getElementById("f-topic").value;
+      var lic = document.getElementById("f-lic").value;
+      var q = (document.getElementById("f-q").value || "").toLowerCase();
+      if (lang !== "all" && item.lang !== lang) return false;
+      if (topic !== "all" && item.topic !== topic) return false;
+      if (lic !== "any" && item.lic !== lic) return false;
+      if (q && item.t.indexOf(q) < 0 && item.name.toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    }
+    function render() {
+      var list = DATA.filter(match).sort(function (a, b) {
+        return document.getElementById("f-sort").value === "updated" ? a.name.localeCompare(b.name) : b.stars - a.stars;
+      });
+      var el = document.getElementById("view-cards");
+      el.innerHTML = "";
+      list.forEach(function (r) {
+        var art = document.createElement("article");
+        art.className = "card";
+        art.innerHTML =
+          "<h3><a href=\"https://github.com/search?q=" +
+          encodeURIComponent(r.name) +
+          "\" target=\"_blank\" rel=\"noopener\">" +
+          r.name +
+          "</a></h3><span class=\"badge\">" +
+          r.topic +
+          "</span> <span class=\"muted\">★ " +
+          r.stars.toLocaleString() +
+          "</span><p class=\"muted\">" +
+          r.desc +
+          "</p><p><a href=\"./project.html\">Detail →</a></p>";
+        el.appendChild(art);
+      });
+    }
+    ["f-lang", "f-topic", "f-lic", "f-sort", "f-q"].forEach(function (id) {
+      document.getElementById(id).addEventListener("input", render);
+      document.getElementById(id).addEventListener("change", render);
+    });
+    document.getElementById("v-card").onclick = function () {
+      document.getElementById("view-cards").hidden = false;
+      document.getElementById("view-dense").hidden = true;
+    };
+    document.getElementById("v-dense").onclick = function () {
+      document.getElementById("view-cards").hidden = true;
+      document.getElementById("view-dense").hidden = false;
+    };
+    render();
+  </script>
+</body>
+</html>
