@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI_Hues — Idea results</title>
+  <link rel="stylesheet" href="./assets/styles.css" />
+</head>
+<body>
+  <header class="site-header"><div id="nav-mount"></div></header>
+  <main class="wrap section">
+    <h1 data-i18n="ideaTitle"></h1>
+    <p class="muted"><span data-i18n="ideaSub"></span> <strong id="qval"></strong></p>
+    <div class="grid" style="margin-top:20px">
+      <article class="card">
+        <h3><a href="https://github.com/ggerganov/whisper.cpp" target="_blank" rel="noopener">whisper.cpp</a></h3>
+        <span class="badge">Hue · ML / edge</span>
+        <p class="muted" style="margin-top:8px"><strong data-i18n="ideaCardWhy"></strong>: Local speech-to-text fits short-audio MVP without heavy Python ops.</p>
+        <p class="muted"><strong data-i18n="ideaCardShow"></strong>: Offline meeting notes on a laptop.</p>
+        <p><a href="./project.html#comments" data-i18n="ideaCardComments"></a> · <a href="./project.html">Detail →</a></p>
+      </article>
+      <article class="card">
+        <h3><a href="https://github.com/withastro/astro" target="_blank" rel="noopener">Astro</a></h3>
+        <span class="badge">Hue · Web</span>
+        <p class="muted" style="margin-top:8px"><strong data-i18n="ideaCardWhy"></strong>: Fast English landing pages for the same idea funnel.</p>
+        <p class="muted"><strong data-i18n="ideaCardShow"></strong>: Marketing microsite shipped in a weekend.</p>
+        <p><a href="./project.html#comments" data-i18n="ideaCardComments"></a> · <a href="./project.html">Detail →</a></p>
+      </article>
+      <article class="card">
+        <h3><a href="https://github.com/duckdb/duckdb" target="_blank" rel="noopener">DuckDB</a></h3>
+        <span class="badge">Hue · Data</span>
+        <p class="muted" style="margin-top:8px"><strong data-i18n="ideaCardWhy"></strong>: If you store transcripts/events, embedded analytics keeps costs predictable.</p>
+        <p class="muted"><strong data-i18n="ideaCardShow"></strong>: Nightly batch over 30s clips.</p>
+        <p><a href="./project.html#comments" data-i18n="ideaCardComments"></a> · <a href="./project.html">Detail →</a></p>
+      </article>
+    </div>
+    <p class="row" style="margin-top:24px"><a class="btn btn-ghost" href="./index.html">← Home</a></p>
+  </main>
+  <footer class="site-footer"><div class="wrap"><span data-i18n="footerNote"></span></div></footer>
+  <script src="./assets/app.js"></script>
+  <script>
+    var p = new URLSearchParams(location.search);
+    document.getElementById("qval").textContent = p.get("q") || "(empty)";
+  </script>
+</body>
+</html>

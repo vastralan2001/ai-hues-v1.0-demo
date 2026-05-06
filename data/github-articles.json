@@ -1,0 +1,176 @@
+[
+  {
+    "full_name": "facebook/react",
+    "html_url": "https://github.com/facebook/react",
+    "description": "The library for web and native user interfaces.",
+    "stargazers_count": 244763,
+    "language": "JavaScript",
+    "topics": [
+      "declarative",
+      "frontend",
+      "javascript",
+      "library",
+      "react",
+      "ui"
+    ],
+    "license": "MIT",
+    "updated_at": "2026-04-29T11:19:04Z",
+    "homepage": "https://react.dev"
+  },
+  {
+    "full_name": "openai/whisper",
+    "html_url": "https://github.com/openai/whisper",
+    "description": "Robust Speech Recognition via Large-Scale Weak Supervision",
+    "stargazers_count": 98619,
+    "language": "Python",
+    "topics": [],
+    "license": "MIT",
+    "updated_at": "2026-04-29T11:11:42Z",
+    "homepage": ""
+  },
+  {
+    "full_name": "vercel/next.js",
+    "html_url": "https://github.com/vercel/next.js",
+    "description": "The React Framework",
+    "stargazers_count": 139214,
+    "language": "JavaScript",
+    "topics": [
+      "blog",
+      "browser",
+      "compiler",
+      "components",
+      "hybrid",
+      "nextjs",
+      "node",
+      "react"
+    ],
+    "license": "MIT",
+    "updated_at": "2026-04-29T10:43:16Z",
+    "homepage": "https://nextjs.org"
+  },
+  {
+    "full_name": "rust-lang/rust",
+    "html_url": "https://github.com/rust-lang/rust",
+    "description": "Empowering everyone to build reliable and efficient software.",
+    "stargazers_count": 112420,
+    "language": "Rust",
+    "topics": [
+      "compiler",
+      "language",
+      "rust"
+    ],
+    "license": "Apache-2.0",
+    "updated_at": "2026-04-29T11:09:24Z",
+    "homepage": "https://www.rust-lang.org"
+  },
+  {
+    "full_name": "golang/go",
+    "html_url": "https://github.com/golang/go",
+    "description": "The Go programming language",
+    "stargazers_count": 133680,
+    "language": "Go",
+    "topics": [
+      "go",
+      "golang",
+      "language",
+      "programming-language"
+    ],
+    "license": "BSD-3-Clause",
+    "updated_at": "2026-04-29T11:20:06Z",
+    "homepage": "https://go.dev"
+  },
+  {
+    "full_name": "microsoft/vscode",
+    "html_url": "https://github.com/microsoft/vscode",
+    "description": "Visual Studio Code",
+    "stargazers_count": 184376,
+    "language": "TypeScript",
+    "topics": [
+      "editor",
+      "electron",
+      "microsoft",
+      "typescript",
+      "visual-studio-code"
+    ],
+    "license": "MIT",
+    "updated_at": "2026-04-29T11:18:55Z",
+    "homepage": "https://code.visualstudio.com"
+  },
+  {
+    "full_name": "oven-sh/bun",
+    "html_url": "https://github.com/oven-sh/bun",
+    "description": "Incredibly fast JavaScript runtime, bundler, test runner, and package manager – all in one",
+    "stargazers_count": 89434,
+    "language": "Zig",
+    "topics": [
+      "bun",
+      "bundler",
+      "javascript",
+      "javascriptcore",
+      "jsx",
+      "nodejs",
+      "npm",
+      "react"
+    ],
+    "license": "NOASSERTION",
+    "updated_at": "2026-04-29T11:02:57Z",
+    "homepage": "https://bun.com"
+  },
+  {
+    "full_name": "withastro/astro",
+    "html_url": "https://github.com/withastro/astro",
+    "description": "The web framework for content-driven websites. ⭐️ Star to support our work!",
+    "stargazers_count": 58841,
+    "language": "TypeScript",
+    "topics": [
+      "astro",
+      "blog",
+      "browser",
+      "components",
+      "hybrid",
+      "islands",
+      "node",
+      "server"
+    ],
+    "license": "NOASSERTION",
+    "updated_at": "2026-04-29T10:55:05Z",
+    "homepage": "https://astro.build"
+  },
+  {
+    "full_name": "duckdb/duckdb",
+    "html_url": "https://github.com/duckdb/duckdb",
+    "description": "DuckDB is an analytical in-process SQL database management system",
+    "stargazers_count": 37810,
+    "language": "C++",
+    "topics": [
+      "analytics",
+      "database",
+      "embedded-database",
+      "olap",
+      "sql"
+    ],
+    "license": "MIT",
+    "updated_at": "2026-04-29T11:02:30Z",
+    "homepage": "http://www.duckdb.org"
+  },
+  {
+    "full_name": "langchain-ai/langchain",
+    "html_url": "https://github.com/langchain-ai/langchain",
+    "description": "The agent engineering platform",
+    "stargazers_count": 135337,
+    "language": "Python",
+    "topics": [
+      "agents",
+      "ai",
+      "ai-agents",
+      "anthropic",
+      "chatgpt",
+      "deepagents",
+      "enterprise",
+      "framework"
+    ],
+    "license": "MIT",
+    "updated_at": "2026-04-29T11:19:20Z",
+    "homepage": "https://docs.langchain.com/langchain/"
+  }
+]
